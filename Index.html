@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#020617">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Aprendre Valencià</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;-webkit-text-size-adjust:100%;}
+body{
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
+  background-color:#020617;
+  background-image:radial-gradient(circle at 50% -20%,#1e293b 0%,#020617 100%);
+  background-attachment:fixed;
+  color:#e2e8f0;
+  min-height:100vh;
+  -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
+}
+button{cursor:pointer;font-family:inherit;border:none;background:none;color:inherit;}
+input,textarea{font-family:inherit;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:#020617;}
+::-webkit-scrollbar-thumb{background:rgba(30,64,175,0.5);border-radius:9999px;}
+
+/* VIEWS */
+.view{display:none;min-height:100vh;}
+.view.active{display:block;}
+
+/* HOME */
+#home-view{max-width:42rem;margin:0 auto;}
+.home-header{padding:3rem 1.5rem 0;position:relative;overflow:hidden;}
+.home-glow{position:absolute;top:0;left:25%;width:16rem;height:16rem;background:rgba(37,99,235,0.1);filter:blur(100px);border-radius:50%;pointer-events:none;}
+.home-badge{display:flex;align-items:center;gap:0.5rem;color:#60a5fa;font-family:'JetBrains Mono',monospace;font-size:0.625rem;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:0.75rem;}
+.home-h1{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:white;line-height:1.15;margin-bottom:0.75rem;}
+.home-h1 em{color:#60a5fa;font-style:italic;}
+.home-sub{color:#64748b;font-size:0.875rem;max-width:15rem;line-height:1.6;}
+.home-section{padding:0 1.5rem;margin-top:2rem;}
+.home-section-label{color:#64748b;font-family:'JetBrains Mono',monospace;font-size:0.625rem;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:1rem;}
+.card-glossary{position:relative;overflow:hidden;background:rgba(15,23,42,0.4);border:1px solid rgba(255,255,255,0.05);border-radius:1.5rem;padding:1.5rem;text-align:left;width:100%;transition:background 0.2s,border-color 0.2s;}
+.card-glossary:hover{background:rgba(15,23,42,0.6);border-color:rgba(59,130,246,0.3);}
+.card-glossary:active{transform:scale(0.98);}
+.card-bg-icon{position:absolute;top:0;right:0;padding:1rem;opacity:0.1;pointer-events:none;transition:opacity 0.2s;}
+.card-glossary:hover .card-bg-icon{opacity:0.2;}
+.card-icon{width:3rem;height:3rem;background:rgba(59,130,246,0.1);border-radius:1rem;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
+.card-icon svg,.back-btn svg,.sv-arrow svg,.session-arrow svg{stroke-linecap:round;stroke-linejoin:round;}
+.card-row{display:flex;align-items:center;justify-content:space-between;}
+.card-glossary h3{font-size:1.25rem;font-weight:600;color:white;margin-bottom:0.5rem;}
+.card-glossary p{font-size:0.875rem;color:#94a3b8;line-height:1.6;}
+.session-card{width:100%;display:flex;align-items:center;gap:1.25rem;background:rgba(15,23,42,0.3);border:1px solid rgba(255,255,255,0.05);border-radius:1.5rem;padding:1.25rem;text-align:left;transition:background 0.2s,border-color 0.2s;}
+.session-card:hover{background:rgba(15,23,42,0.5);border-color:rgba(59,130,246,0.2);}
+.session-card:active{transform:scale(0.99);}
+.session-num{flex-shrink:0;width:3.5rem;height:3.5rem;border-radius:1rem;background:rgba(30,41,59,0.5);border:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#60a5fa;transition:background 0.2s,color 0.2s;}
+.session-card:hover .session-num{background:#2563eb;color:white;}
+.session-info{flex:1;min-width:0;}
+.session-week-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;}
+.session-week-label{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:rgba(59,130,246,0.7);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;}
+.session-week-line{height:1px;flex:1;background:rgba(255,255,255,0.05);}
+.session-title{color:#f1f5f9;font-weight:600;font-size:1.125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.session-desc{font-size:0.75rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:0.125rem;}
+.session-arrow{width:2rem;height:2rem;border-radius:50%;background:rgba(30,41,59,0.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s;}
+.session-card:hover .session-arrow{background:rgba(37,99,235,0.2);}
+.sessions-list{display:flex;flex-direction:column;gap:1rem;padding-bottom:5rem;}
+.upcoming{padding:2.5rem;border:2px dashed rgba(255,255,255,0.05);border-radius:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0.4;}
+.upcoming-icon{padding:1rem;background:#020617;border-radius:1rem;margin-bottom:1rem;}
+.upcoming-label{font-size:0.75rem;color:#475569;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.2em;}
+
+/* SESSION VIEW */
+#session-view{max-width:42rem;margin:0 auto;}
+.sv-header{position:sticky;top:0;z-index:20;background:rgba(2,6,23,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.05);padding:1.5rem;}
+.sv-top-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
+.back-btn{padding:0.5rem;border-radius:50%;transition:background 0.2s;flex-shrink:0;}
+.back-btn:hover{background:rgba(15,23,42,1);}
+.sv-title-block{flex:1;}
+.sv-week-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.125rem;}
+.sv-week-label{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:#3b82f6;text-transform:uppercase;letter-spacing:0.15em;}
+.sv-week-line{height:1px;flex:1;background:rgba(255,255,255,0.05);}
+.sv-title{font-family:'Playfair Display',serif;font-weight:700;font-size:1.25rem;color:white;line-height:1.2;}
+.tab-nav{display:flex;gap:0.25rem;background:rgba(15,23,42,0.5);padding:0.375rem;border-radius:1rem;border:1px solid rgba(255,255,255,0.05);}
+.tab-btn{flex:1;padding:0.625rem 0.25rem;font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;border-radius:0.75rem;transition:all 0.2s;color:#64748b;white-space:nowrap;}
+.tab-btn:hover{color:#cbd5e1;}
+.tab-btn.active{background:#2563eb;color:white;font-weight:700;box-shadow:0 4px 15px rgba(37,99,235,0.3);}
+.tab-content{display:none;padding:1.5rem;padding-bottom:calc(2rem + env(safe-area-inset-bottom,0px));}
+.tab-content.active{display:block;}
+
+/* GRAMMAR */
+.note-card{display:flex;gap:1rem;padding:1.25rem;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.1);border-radius:1.5rem;margin-bottom:1rem;}
+.note-icon{padding:0.5rem;background:rgba(59,130,246,0.1);border-radius:0.75rem;height:fit-content;flex-shrink:0;}
+.note-text{font-size:0.875rem;color:rgba(191,219,254,0.7);line-height:1.6;font-weight:500;}
+.verb-section{margin-bottom:2.5rem;}
+.verb-section-title{display:flex;align-items:baseline;gap:0.75rem;margin-bottom:1.25rem;}
+.verb-section-title h3{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;}
+.verb-section-title span{font-size:0.875rem;color:#64748b;font-style:italic;font-weight:500;}
+.verb-table-wrap{background:rgba(15,23,42,0.4);border:1px solid rgba(255,255,255,0.05);border-radius:1.5rem;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.3);}
+.verb-table{width:100%;border-collapse:collapse;text-align:left;}
+.verb-table thead tr{background:rgba(15,23,42,0.8);}
+.verb-table th{padding:1rem;font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:#64748b;text-transform:uppercase;letter-spacing:0.15em;}
+.verb-table tr{border-top:1px solid rgba(255,255,255,0.05);}
+.verb-table tr:hover{background:rgba(255,255,255,0.01);}
+.verb-table tr.hl{background:rgba(37,99,235,0.05);}
+.verb-table td{padding:1rem;}
+.td-pro{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#64748b;}
+.td-form{font-weight:600;font-size:1rem;color:#f1f5f9;}
+.td-form.hl{color:#60a5fa;}
+.td-cast{font-size:0.75rem;color:#475569;font-style:italic;font-weight:500;}
+.verb-pills{display:flex;flex-wrap:wrap;gap:0.625rem;padding-top:0.5rem;}
+.pill{padding:0.375rem 0.75rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.05);font-family:'JetBrains Mono',monospace;font-size:0.625rem;text-transform:uppercase;letter-spacing:0.1em;color:#64748b;background:rgba(15,23,42,0.5);transition:all 0.15s;}
+.pill:hover{border-color:rgba(59,130,246,0.3);color:#cbd5e1;}
+.pill:active{transform:scale(0.95);}
+.pill.ap{background:#2563eb;border-color:#3b82f6;color:white;box-shadow:0 4px 12px rgba(37,99,235,0.3);}
+
+/* IRREGULARS */
+.irreg-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.irreg-card{background:rgba(15,23,42,0.4);border:1px solid rgba(255,255,255,0.05);border-radius:1.5rem;overflow:hidden;transition:border-color 0.2s;}
+.irreg-card:hover{border-color:rgba(59,130,246,0.2);}
+.irreg-header{background:rgba(15,23,42,0.8);padding:1.25rem;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:baseline;}
+.irreg-inf{font-family:'Playfair Display',serif;font-weight:700;font-size:1.125rem;color:white;transition:color 0.2s;}
+.irreg-card:hover .irreg-inf{color:#60a5fa;}
+.irreg-meaning{font-size:0.625rem;color:#64748b;font-style:italic;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;}
+.irreg-body{padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;}
+.irreg-row{display:flex;justify-content:space-between;align-items:center;font-size:0.875rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(255,255,255,0.05);}
+.irreg-row:last-child{border-bottom:none;padding-bottom:0;}
+.irreg-pro{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:#475569;text-transform:uppercase;letter-spacing:0.1em;}
+.irreg-form{font-weight:600;color:#e2e8f0;}
+
+/* EXERCISES */
+.ex-list{display:flex;flex-direction:column;gap:1.25rem;}
+.ex-card{background:rgba(15,23,42,0.4);border:1px solid rgba(255,255,255,0.05);border-radius:1.5rem;padding:1.5rem;}
+.ex-num-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;}
+.ex-num-lbl{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:#475569;text-transform:uppercase;letter-spacing:0.2em;white-space:nowrap;}
+.ex-num-line{height:1px;flex:1;background:rgba(255,255,255,0.05);}
+.ex-q{color:#f1f5f9;font-weight:500;line-height:1.6;margin-bottom:1rem;}
+.ex-inp{width:100%;background:#020617;border:1px solid rgba(255,255,255,0.05);border-radius:1rem;padding:1rem;color:#e2e8f0;font-size:1rem;outline:none;transition:border-color 0.2s,background 0.2s;font-weight:500;-webkit-appearance:none;appearance:none;}
+.ex-inp:focus{border-color:#3b82f6;background:rgba(15,23,42,0.5);}
+.ex-inp.ok{border-color:rgba(16,185,129,0.5);color:#34d399;background:rgba(16,185,129,0.05);}
+.ex-inp.ko{border-color:rgba(239,68,68,0.5);color:#f87171;background:rgba(239,68,68,0.05);}
+.ex-hint{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;background:rgba(2,6,23,0.5);padding:0.75rem;border-radius:0.75rem;margin-top:0.75rem;}
+.ex-hint-lbl{font-family:'JetBrains Mono',monospace;text-transform:uppercase;opacity:0.5;font-size:0.625rem;}
+.ex-hint-val{color:#60a5fa;font-weight:700;}
+.ex-btns{position:sticky;bottom:1.5rem;display:flex;gap:1rem;margin-top:2rem;}
+.btn-primary{flex:1;background:#2563eb;color:white;font-weight:700;padding:1.25rem;border-radius:1rem;font-size:1rem;box-shadow:0 10px 30px rgba(37,99,235,0.2);transition:all 0.15s;}
+.btn-primary:active{transform:scale(0.95);}
+.btn-secondary{flex:1;background:rgba(15,23,42,0.8);color:#94a3b8;font-weight:600;padding:1.25rem;border-radius:1rem;font-size:1rem;border:1px solid rgba(255,255,255,0.05);transition:all 0.15s;}
+.btn-secondary:active{transform:scale(0.95);}
+.score-chip{display:flex;align-items:center;justify-content:center;gap:0.75rem;background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.05);border-radius:1.5rem;padding:1.25rem;margin-top:1.25rem;}
+.score-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#60a5fa;}
+.score-msg{color:#94a3b8;font-size:0.875rem;}
+
+/* ROUTINE */
+.routine-list{display:flex;flex-direction:column;gap:1.25rem;}
+.routine-card{background:rgba(15,23,42,0.3);border:1px solid rgba(255,255,255,0.05);border-radius:1.5rem;overflow:hidden;transition:background 0.2s;}
+.routine-card:hover{background:rgba(15,23,42,0.5);}
+.routine-hdr{background:rgba(15,23,42,0.5);padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;}
+.routine-num{width:2.5rem;height:2.5rem;border-radius:0.75rem;background:#2563eb;display:flex;align-items:center;justify-content:center;color:white;font-family:'Playfair Display',serif;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,0.3);}
+.routine-title-row{display:flex;align-items:center;gap:1rem;}
+.routine-title{font-weight:600;color:#f1f5f9;}
+.routine-badge{padding:0.25rem 0.75rem;background:#020617;border-radius:9999px;border:1px solid rgba(255,255,255,0.05);}
+.routine-badge span{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:#60a5fa;text-transform:uppercase;letter-spacing:0.1em;}
+.routine-tasks{padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem;}
+.task-row{display:flex;gap:1.25rem;}
+.task-time-col{display:flex;flex-direction:column;align-items:center;gap:0.5rem;}
+.task-time{font-family:'JetBrains Mono',monospace;font-size:0.625rem;color:rgba(59,130,246,0.5);width:3rem;text-align:center;white-space:nowrap;}
+.task-line{width:1px;flex:1;background:rgba(255,255,255,0.05);min-height:1rem;}
+.task-desc{font-size:0.875rem;color:#94a3b8;line-height:1.6;padding-top:0.125rem;transition:color 0.2s;}
+.task-row:hover .task-desc{color:#e2e8f0;}
+
+/* GLOSSARY */
+#glossary-view{max-width:42rem;margin:0 auto;}
+.gl-header{position:sticky;top:0;z-index:10;background:rgba(2,6,23,0.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.05);padding:1.5rem;display:flex;align-items:center;gap:1rem;}
+.gl-header h1{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;}
+.gl-main{padding:1.5rem;display:flex;flex-direction:column;gap:2rem;}
+.gl-info{background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.1);border-radius:1.5rem;padding:1.5rem;}
+.gl-info p{font-size:0.875rem;color:rgba(191,219,254,0.7);line-height:1.6;font-weight:500;}
+.gl-topics{display:flex;flex-direction:column;gap:0.75rem;}
+.topic-item{display:flex;align-items:center;gap:1rem;padding:1.25rem;background:rgba(15,23,42,0.3);border:1px solid rgba(255,255,255,0.05);border-radius:1.25rem;transition:all 0.2s;}
+.topic-item:hover{background:rgba(15,23,42,0.5);border-color:rgba(59,130,246,0.2);}
+.topic-icon{width:2rem;height:2rem;border-radius:0.5rem;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s;}
+.topic-item:hover .topic-icon{background:rgba(59,130,246,0.2);}
+.topic-icon svg{stroke:rgba(96,165,250,0.5);fill:none;stroke-width:2;transition:stroke 0.2s;}
+.topic-item:hover .topic-icon svg{stroke:#60a5fa;}
+.topic-name{color:#e2e8f0;font-weight:500;}
+
+@media(max-width:480px){
+  .home-h1{font-size:2.5rem;}
+  .irreg-grid{grid-template-columns:1fr;}
+  .verb-table th,.verb-table td{padding:0.75rem 0.625rem;}
+  .tab-btn{font-size:0.55rem;letter-spacing:0.04em;}
+}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home-view" class="view active">
+  <div class="home-header">
+    <div class="home-glow"></div>
+    <div class="home-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Premium Learning
+    </div>
+    <h1 class="home-h1">Aprendre<br><em>Valencià</em></h1>
+    <p class="home-sub">Domina la llengua amb el mestre digital més avançat.</p>
+  </div>
+  <div class="home-section" style="margin-top:2rem;">
+    <p class="home-section-label">Exploració</p>
+    <button class="card-glossary" onclick="showGlossary()">
+      <div class="card-bg-icon"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+      <div class="card-row">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <h3>Glossari de Temes</h3>
+      <p>Índex complet de conceptes gramaticals i vocabulari.</p>
+    </button>
+  </div>
+  <div class="home-section" style="margin-top:2rem;">
+    <p class="home-section-label">El Teu Camí</p>
+    <div class="sessions-list" id="sessions-list"></div>
+  </div>
+</div>
+
+<!-- SESSION VIEW -->
+<div id="session-view" class="view">
+  <div class="sv-header">
+    <div class="sv-top-row">
+      <button class="back-btn" onclick="showHome()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="sv-title-block">
+        <div class="sv-week-row">
+          <span class="sv-week-label" id="sv-week-label"></span>
+          <div class="sv-week-line"></div>
+        </div>
+        <h1 class="sv-title" id="sv-title"></h1>
+      </div>
+    </div>
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('grammar',this)">Gramàtica</button>
+      <button class="tab-btn" onclick="switchTab('irregulars',this)">Irregulars</button>
+      <button class="tab-btn" onclick="switchTab('exercises',this)">Exercicis</button>
+      <button class="tab-btn" onclick="switchTab('routine',this)">Rutina</button>
+    </nav>
+  </div>
+  <div id="tab-grammar" class="tab-content active"></div>
+  <div id="tab-irregulars" class="tab-content"></div>
+  <div id="tab-exercises" class="tab-content"></div>
+  <div id="tab-routine" class="tab-content"></div>
+</div>
+
+<!-- GLOSSARY VIEW -->
+<div id="glossary-view" class="view">
+  <div class="gl-header">
+    <button class="back-btn" onclick="showHome()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1>Glossari</h1>
+  </div>
+  <div class="gl-main">
+    <div class="gl-info"><p>Aquí trobaràs un índex de tots els temes tractats a les sessions. Utilitza-ho per repassar conceptes ràpidament.</p></div>
+    <div class="gl-topics" id="gl-topics"></div>
+  </div>
+</div>
+
+<script>
+/* ── DATA ── */
+const MEANINGS = {"menjar":"comer","treballar":"trabajar","comprar":"comprar","estudiar":"estudiar","caminar":"caminar","mirar":"mirar","esperar":"esperar","beure":"beber","vendre":"vender","perdre":"perder","escriure":"escribir","saber":"saber","obrir":"abrir","eixir":"salir","sentir":"sentir","servir":"servir","llegir":"leer"};
+
+const SESSIONS = [{
+  id:'week-1-2', week:1,
+  title:"Present d'Indicatiu",
+  description:"La base gramatical: els tres grups de verbs regulars i els irregulars més comuns.",
+  topics:["Present d'Indicatiu","Verbs -AR","Verbs -ER/-RE","Verbs -IR","Ser i Estar","Verbs de moviment"],
+  grammar:{
+    notes:[
+      "La 1ª persona (-AR) termina en -e, no en -o. Jo parle, no *parlo.",
+      "Si conoces la raíz en castellano, en valenciano el patrón de terminaciones es el mismo para todos los verbos regulares del mismo grupo."
+    ],
+    verbGroups:[
+      {title:"Verbs en -AR",infinitive:"parlar",meaning:"hablar",
+       conjugations:[{p:"jo",f:"parle",t:"hablo",hl:true},{p:"tu",f:"parles",t:"hablas"},{p:"ell/ella",f:"parla",t:"habla"},{p:"nosaltres",f:"parlem",t:"hablamos"},{p:"vosaltres",f:"parleu",t:"habláis"},{p:"ells/elles",f:"parlen",t:"hablan"}],
+       examples:["menjar","treballar","comprar","estudiar","caminar","mirar","esperar"]},
+      {title:"Verbs en -ER/-RE",infinitive:"córrer",meaning:"correr",
+       conjugations:[{p:"jo",f:"corre",t:"corro",hl:true},{p:"tu",f:"corres",t:"corres"},{p:"ell/ella",f:"corre",t:"corre"},{p:"nosaltres",f:"correm",t:"corremos"},{p:"vosaltres",f:"correu",t:"corréis"},{p:"ells/elles",f:"corren",t:"corren"}],
+       examples:["beure","vendre","perdre","escriure","saber"]},
+      {title:"Verbs en -IR",infinitive:"dormir",meaning:"dormir",
+       conjugations:[{p:"jo",f:"dorm",t:"duermo",hl:true},{p:"tu",f:"dorms",t:"duermes"},{p:"ell/ella",f:"dorm",t:"duerme"},{p:"nosaltres",f:"dormim",t:"dormimos"},{p:"vosaltres",f:"dormiu",t:"dormís"},{p:"ells/elles",f:"dormen",t:"duermen"}],
+       examples:["obrir","eixir","sentir","servir","llegir"]}
+    ]
+  },
+  irregulars:[
+    {infinitive:"ser",meaning:"ser",conjugations:[{p:"jo",f:"sóc"},{p:"tu",f:"ets"},{p:"ell/ella",f:"és"},{p:"nosaltres",f:"som"},{p:"vosaltres",f:"sou"},{p:"ells/elles",f:"són"}]},
+    {infinitive:"estar",meaning:"estar",conjugations:[{p:"jo",f:"estic"},{p:"tu",f:"estàs"},{p:"ell/ella",f:"està"},{p:"nosaltres",f:"estem"},{p:"vosaltres",f:"esteu"},{p:"ells/elles",f:"estan"}]},
+    {infinitive:"tenir",meaning:"tener",conjugations:[{p:"jo",f:"tinc"},{p:"tu",f:"tens"},{p:"ell/ella",f:"té"},{p:"nosaltres",f:"tenim"},{p:"vosaltres",f:"teniu"},{p:"ells/elles",f:"tenen"}]},
+    {infinitive:"anar",meaning:"ir",conjugations:[{p:"jo",f:"vaig"},{p:"tu",f:"vas"},{p:"ell/ella",f:"va"},{p:"nosaltres",f:"anem"},{p:"vosaltres",f:"aneu"},{p:"ells/elles",f:"van"}]},
+    {infinitive:"fer",meaning:"hacer",conjugations:[{p:"jo",f:"faig"},{p:"tu",f:"fas"},{p:"ell/ella",f:"fa"},{p:"nosaltres",f:"fem"},{p:"vosaltres",f:"feu"},{p:"ells/elles",f:"fan"}]},
+    {infinitive:"poder",meaning:"poder",conjugations:[{p:"jo",f:"puc"},{p:"tu",f:"pots"},{p:"ell/ella",f:"pot"},{p:"nosaltres",f:"podem"},{p:"vosaltres",f:"podeu"},{p:"ells/elles",f:"poden"}]}
+  ],
+  exercises:[
+    {id:'e1',q:"Jo ___ molt de temps a casa. (treballar)",a:"treballe"},
+    {id:'e2',q:"Ella ___ cada matí al parc. (córrer)",a:"corre"},
+    {id:'e3',q:"Nosaltres ___ a la universitat. (estudiar)",a:"estudiem"},
+    {id:'e4',q:"Vosaltres ___ molt bé. (parlar)",a:"parleu"},
+    {id:'e5',q:"Ells ___ fins tard cada dia. (dormir)",a:"dormen"},
+    {id:'e6',q:"Jo ___ molt content avui. (ser)",a:"sóc"},
+    {id:'e7',q:"Ella ___ molta feina aquesta setmana. (tenir)",a:"té"},
+    {id:'e8',q:"Jo ___ al mercat ara. (anar)",a:"vaig"},
+    {id:'e9',q:"Ell ___ el sopar cada vespre. (fer)",a:"fa"},
+    {id:'e10',q:"Jo no ___ vindre demà. (poder)",a:"puc"}
+  ],
+  routine:[
+    {day:1,title:"Terminacions -AR regulars",tasks:[
+      {t:"0–5'",d:"Lee la tabla de parlar. Di cada forma en voz alta 2 veces."},
+      {t:"5–12'",d:"Conjuga de memoria: menjar, treballar, comprar."},
+      {t:"12–15'",d:"Escribe 3 frases propias sobre hoy en -AR. Di las frases en voz alta."}
+    ]},
+    {day:2,title:"Terminacions -ER/-IR regulars",tasks:[
+      {t:"0–5'",d:"Repasa parlar de memoria (1 min). Luego lee córrer i dormir."},
+      {t:"5–12'",d:"Conjuga: beure, eixir, obrir. Observa las diferencias con -AR."},
+      {t:"12–15'",d:"3 frases mezclando los tres grupos. Jo menj, corre i dorm bé."}
+    ]},
+    {day:3,title:"Ser + estar · primer irregular",tasks:[
+      {t:"0–5'",d:"Escribe de memoria las formas de parlar. Máx. 1 min."},
+      {t:"5–12'",d:"ser = identidad permanente · estar = estado temporal. Memoriza las frases modelo."},
+      {t:"12–15'",d:"3 frases: una con sóc, una con estic, una con és / està."}
+    ]},
+    {day:4,title:"Tenir + poder · irregulars en -c",tasks:[
+      {t:"0–5'",d:"Di en voz alta sin mirar: sóc, ets, és... / estic, estàs, està..."},
+      {t:"5–12'",d:"Memoriza tinc / té y puc / pot. Practica: Tinc gana. No puc vindre. Té raó."},
+      {t:"12–15'",d:"Frases libres con tinc y no puc aplicadas a tu día real."}
+    ]},
+    {day:5,title:"Anar + fer · els més usats",tasks:[
+      {t:"0–5'",d:"Escribe sin mirar jo, tu, ell de: ser, estar, tenir, poder."},
+      {t:"5–12'",d:"Aprende vaig / va / van y faig / fa / fan. vaig también construye el pasado perifrástico."},
+      {t:"12–15'",d:"5 preguntas con On vas? Què fas? Qui va? Invéntalas y respóndelas."}
+    ]},
+    {day:6,title:"Exercicis · autocorrecció",tasks:[
+      {t:"0–3'",d:"Di las frases modelo en voz alta (pestaña Irregulars)."},
+      {t:"3–12'",d:"Haz los ejercicios sin mirar las tablas. Luego corrige."},
+      {t:"12–15'",d:"Anota qué formas has fallado. Esas son tu prioridad el día 7."}
+    ]},
+    {day:7,title:"Producció lliure total",tasks:[
+      {t:"0–3'",d:"Repasa los errores del día 6."},
+      {t:"3–15'",d:"Escribe un párrafo de 8-10 frases describiendo tu semana. Usa todos los verbos. Léelo en voz alta al terminar."}
+    ]}
+  ]
+}];
+
+/* ── STATE ── */
+let curSession = null, exAnswers = {}, showResults = false, verbState = {};
+
+/* ── VIEWS ── */
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function showHome(){showView('home-view');}
+function showGlossary(){renderGlossary();showView('glossary-view');}
+function showSession(s){
+  curSession=s; exAnswers={}; showResults=false; verbState={};
+  document.getElementById('sv-week-label').textContent='Setmana '+s.week;
+  document.getElementById('sv-title').textContent=s.title;
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===0));
+  renderGrammar(); renderIrregulars(); renderExercises(); renderRoutine();
+  showView('session-view');
+}
+
+/* ── TABS ── */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ── NORMALIZE ── */
+function norm(s){return s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ç/g,'c');}
+
+/* ── HOME ── */
+function renderHome(){
+  document.getElementById('sessions-list').innerHTML=
+    SESSIONS.map(s=>`
+      <button class="session-card" onclick='showSession(SESSIONS[${SESSIONS.indexOf(s)}])'>
+        <div class="session-num">${s.week}</div>
+        <div class="session-info">
+          <div class="session-week-row">
+            <span class="session-week-label">Setmana ${s.week}</span>
+            <div class="session-week-line"></div>
+          </div>
+          <div class="session-title">${s.title}</div>
+          <div class="session-desc">${s.description}</div>
+        </div>
+        <div class="session-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </button>`).join('')+`
+    <div class="upcoming">
+      <div class="upcoming-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <p class="upcoming-label">Pròximes Sessions</p>
+    </div>`;
+}
+
+/* ── GLOSSARY ── */
+function renderGlossary(){
+  const topics=[...new Set(SESSIONS.flatMap(s=>s.topics))].sort();
+  document.getElementById('gl-topics').innerHTML=topics.map(t=>`
+    <div class="topic-item">
+      <div class="topic-icon"><svg width="16" height="16" viewBox="0 0 24 24"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></div>
+      <span class="topic-name">${t}</span>
+    </div>`).join('');
+}
+
+/* ── GRAMMAR ── */
+function getVerbState(g){return verbState[g.title]||{infinitive:g.infinitive,meaning:g.meaning,conjugations:g.conjugations};}
+
+function computeConj(g, ex){
+  return g.conjugations.map(c=>{
+    let root='',suffix='';
+    if(g.title.includes('-AR')){root=ex.slice(0,-2);suffix=g.infinitive.slice(0,-2);}
+    else if(g.title.includes('-ER')||g.title.includes('-RE')){root=ex.replace(/er$|re$/,'');suffix=g.infinitive.replace(/er$|re$/,'');}
+    else if(g.title.includes('-IR')){root=ex.slice(0,-2);suffix=g.infinitive.slice(0,-2);}
+    let form=c.f.replace(suffix,root);
+    if(ex.endsWith('jar'))form=form.replace(/je/g,'ge');
+    if(ex.endsWith('car'))form=form.replace(/ce/g,'que');
+    if(ex.endsWith('gar'))form=form.replace(/ge/g,'gue');
+    return{...c,f:form};
+  });
+}
+
+function renderVerbTable(g){
+  const av=getVerbState(g);
+  const rows=av.conjugations.map(c=>`
+    <tr class="${c.hl?'hl':''}">
+      <td class="td-pro">${c.p}</td>
+      <td class="td-form${c.hl?' hl':''}">${c.f}</td>
+      <td class="td-cast">${c.t}</td>
+    </tr>`).join('');
+  const pills=(g.examples||[]).map(ex=>`
+    <button class="pill${av.infinitive===ex?' ap':''}" onclick="selectPill('${g.title}','${ex}')">${ex}</button>`).join('');
+  const reset=`<button class="pill${av.infinitive===g.infinitive?' ap':''}" onclick="resetPill('${g.title}')">reset (${g.infinitive})</button>`;
+  return`<div class="verb-section">
+    <div class="verb-section-title"><h3>${g.title}</h3><span>(${av.infinitive} — ${av.meaning})</span></div>
+    <div class="verb-table-wrap"><table class="verb-table">
+      <thead><tr><th>Pronom</th><th>Forma</th><th>Castellà</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <div class="verb-pills">${pills}${reset}</div>
+  </div>`;
+}
+
+function renderGrammar(){
+  const s=curSession;
+  const notes=s.grammar.notes.map(n=>`
+    <div class="note-card">
+      <div class="note-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <p class="note-text">${n}</p>
+    </div>`).join('');
+  document.getElementById('tab-grammar').innerHTML=notes+s.grammar.verbGroups.map(g=>renderVerbTable(g)).join('');
+}
+
+function selectPill(gt,ex){
+  const g=curSession.grammar.verbGroups.find(g=>g.title===gt);
+  verbState[gt]={infinitive:ex,meaning:MEANINGS[ex]||'...',conjugations:computeConj(g,ex)};
+  renderGrammar();
+}
+function resetPill(gt){
+  const g=curSession.grammar.verbGroups.find(g=>g.title===gt);
+  verbState[gt]={infinitive:g.infinitive,meaning:g.meaning,conjugations:g.conjugations};
+  renderGrammar();
+}
+
+/* ── IRREGULARS ── */
+function renderIrregulars(){
+  const cards=(curSession.irregulars||[]).map(g=>`
+    <div class="irreg-card">
+      <div class="irreg-header">
+        <span class="irreg-inf">${g.infinitive}</span>
+        <span class="irreg-meaning">${g.meaning}</span>
+      </div>
+      <div class="irreg-body">
+        ${g.conjugations.map(c=>`
+          <div class="irreg-row">
+            <span class="irreg-pro">${c.p}</span>
+            <span class="irreg-form">${c.f}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+  document.getElementById('tab-irregulars').innerHTML=`<div class="irreg-grid">${cards}</div>`;
+}
+
+/* ── EXERCISES ── */
+function renderExercises(){
+  const s=curSession;
+  const items=s.exercises.map((ex,i)=>{
+    const val=exAnswers[ex.id]||'';
+    let cls='ex-inp', hint='';
+    if(showResults){
+      const ok=norm(val)===norm(ex.a);
+      cls+= ok?' ok':' ko';
+      if(!ok) hint=`<div class="ex-hint"><span class="ex-hint-lbl">Correcte:</span><span class="ex-hint-val">${ex.a}</span></div>`;
+    }
+    return`<div class="ex-card">
+      <div class="ex-num-row"><span class="ex-num-lbl">Qüestió ${i+1}</span><div class="ex-num-line"></div></div>
+      <p class="ex-q">${ex.q}</p>
+      <input class="${cls}" type="text" value="${val.replace(/"/g,'&quot;')}" placeholder="Escriu la resposta..."
+        ${showResults?'disabled':''} autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        oninput="exAnswers['${ex.id}']=this.value"/>
+      ${hint}
+    </div>`;
+  }).join('');
+
+  const score=s.exercises.filter(ex=>norm(exAnswers[ex.id]||'')===norm(ex.a)).length;
+  const scoreHtml=showResults?`<div class="score-chip">
+    <span class="score-num">${score}/${s.exercises.length}</span>
+    <span class="score-msg">${score<=3?'Continua practicant!':score<=6?'Bona base, segueix!':score<=9?'Molt bé! 💪':'Excel·lent! 🎉'}</span>
+  </div>`:'';
+
+  const btns=!showResults
+    ?`<div class="ex-btns"><button class="btn-primary" onclick="validateEx()">Validar Respostes</button></div>`
+    :`<div class="ex-btns"><button class="btn-secondary" onclick="resetEx()">Tornar a intentar</button></div>`;
+
+  document.getElementById('tab-exercises').innerHTML=`<div class="ex-list">${items}</div>${btns}${scoreHtml}`;
+}
+function validateEx(){showResults=true;renderExercises();window.scrollTo(0,0);}
+function resetEx(){exAnswers={};showResults=false;renderExercises();}
+
+/* ── ROUTINE ── */
+function renderRoutine(){
+  document.getElementById('tab-routine').innerHTML=`<div class="routine-list">`+
+    curSession.routine.map(day=>`
+      <div class="routine-card">
+        <div class="routine-hdr">
+          <div class="routine-title-row">
+            <div class="routine-num">${day.day}</div>
+            <span class="routine-title">${day.title}</span>
+          </div>
+          <div class="routine-badge"><span>15 min</span></div>
+        </div>
+        <div class="routine-tasks">
+          ${day.tasks.map((task,idx,arr)=>`
+            <div class="task-row">
+              <div class="task-time-col">
+                <span class="task-time">${task.t}</span>
+                ${idx<arr.length-1?'<div class="task-line"></div>':''}
+              </div>
+              <p class="task-desc">${task.d}</p>
+            </div>`).join('')}
+        </div>
+      </div>`).join('')+`</div>`;
+}
+
+/* ── INIT ── */
+renderHome();
+</script>
+</body>
+</html>
