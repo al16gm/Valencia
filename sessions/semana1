@@ -1,0 +1,175 @@
+// ─────────────────────────────────────────
+//  SEMANA 1 — Present d'Indicatiu
+//  Para añadir más sesiones: copia este
+//  archivo, renómbralo (semana2.js, etc.)
+//  y edita los datos. Se cargará solo.
+// ─────────────────────────────────────────
+
+SESSIONS.push({
+  id: 'week-1',
+  week: 1,
+  title: "Present d'Indicatiu",
+  description: "La base gramatical: els tres grups de verbs regulars i els irregulars més comuns.",
+  topics: ["Present d'Indicatiu", "Verbs -AR", "Verbs -ER/-RE", "Verbs -IR", "Ser i Estar", "Verbs de moviment"],
+
+  grammar: {
+    notes: [
+      "La 1ª persona (-AR) termina en -e, no en -o. Jo parle, no *parlo.",
+      "Si conoces la raíz en castellano, en valenciano el patrón de terminaciones es el mismo para todos los verbos regulares del mismo grupo."
+    ],
+    verbGroups: [
+      {
+        title: "Verbs en -AR", infinitive: "parlar", meaning: "hablar",
+        conjugations: [
+          { p: "jo",          f: "parle",  t: "hablo",    hl: true },
+          { p: "tu",          f: "parles", t: "hablas" },
+          { p: "ell/ella",    f: "parla",  t: "habla" },
+          { p: "nosaltres",   f: "parlem", t: "hablamos" },
+          { p: "vosaltres",   f: "parleu", t: "habláis" },
+          { p: "ells/elles",  f: "parlen", t: "hablan" }
+        ],
+        examples: ["menjar", "treballar", "comprar", "estudiar", "caminar", "mirar", "esperar"]
+      },
+      {
+        title: "Verbs en -ER/-RE", infinitive: "córrer", meaning: "correr",
+        conjugations: [
+          { p: "jo",          f: "corre",  t: "corro",    hl: true },
+          { p: "tu",          f: "corres", t: "corres" },
+          { p: "ell/ella",    f: "corre",  t: "corre" },
+          { p: "nosaltres",   f: "correm", t: "corremos" },
+          { p: "vosaltres",   f: "correu", t: "corréis" },
+          { p: "ells/elles",  f: "corren", t: "corren" }
+        ],
+        examples: ["beure", "vendre", "perdre", "escriure", "saber"]
+      },
+      {
+        title: "Verbs en -IR", infinitive: "dormir", meaning: "dormir",
+        conjugations: [
+          { p: "jo",          f: "dorm",   t: "duermo",   hl: true },
+          { p: "tu",          f: "dorms",  t: "duermes" },
+          { p: "ell/ella",    f: "dorm",   t: "duerme" },
+          { p: "nosaltres",   f: "dormim", t: "dormimos" },
+          { p: "vosaltres",   f: "dormiu", t: "dormís" },
+          { p: "ells/elles",  f: "dormen", t: "duermen" }
+        ],
+        examples: ["obrir", "eixir", "sentir", "servir", "llegir"]
+      }
+    ]
+  },
+
+  irregulars: [
+    {
+      infinitive: "ser", meaning: "ser",
+      conjugations: [
+        { p: "jo", f: "sóc" }, { p: "tu", f: "ets" }, { p: "ell/ella", f: "és" },
+        { p: "nosaltres", f: "som" }, { p: "vosaltres", f: "sou" }, { p: "ells/elles", f: "són" }
+      ]
+    },
+    {
+      infinitive: "estar", meaning: "estar",
+      conjugations: [
+        { p: "jo", f: "estic" }, { p: "tu", f: "estàs" }, { p: "ell/ella", f: "està" },
+        { p: "nosaltres", f: "estem" }, { p: "vosaltres", f: "esteu" }, { p: "ells/elles", f: "estan" }
+      ]
+    },
+    {
+      infinitive: "tenir", meaning: "tener",
+      conjugations: [
+        { p: "jo", f: "tinc" }, { p: "tu", f: "tens" }, { p: "ell/ella", f: "té" },
+        { p: "nosaltres", f: "tenim" }, { p: "vosaltres", f: "teniu" }, { p: "ells/elles", f: "tenen" }
+      ]
+    },
+    {
+      infinitive: "anar", meaning: "ir",
+      conjugations: [
+        { p: "jo", f: "vaig" }, { p: "tu", f: "vas" }, { p: "ell/ella", f: "va" },
+        { p: "nosaltres", f: "anem" }, { p: "vosaltres", f: "aneu" }, { p: "ells/elles", f: "van" }
+      ]
+    },
+    {
+      infinitive: "fer", meaning: "hacer",
+      conjugations: [
+        { p: "jo", f: "faig" }, { p: "tu", f: "fas" }, { p: "ell/ella", f: "fa" },
+        { p: "nosaltres", f: "fem" }, { p: "vosaltres", f: "feu" }, { p: "ells/elles", f: "fan" }
+      ]
+    },
+    {
+      infinitive: "poder", meaning: "poder",
+      conjugations: [
+        { p: "jo", f: "puc" }, { p: "tu", f: "pots" }, { p: "ell/ella", f: "pot" },
+        { p: "nosaltres", f: "podem" }, { p: "vosaltres", f: "podeu" }, { p: "ells/elles", f: "poden" }
+      ]
+    }
+  ],
+
+  exercises: [
+    { id: 'w1e1',  q: "Jo ___ molt de temps a casa. (treballar)",          a: "treballe" },
+    { id: 'w1e2',  q: "Ella ___ cada matí al parc. (córrer)",              a: "corre" },
+    { id: 'w1e3',  q: "Nosaltres ___ a la universitat. (estudiar)",        a: "estudiem" },
+    { id: 'w1e4',  q: "Vosaltres ___ molt bé. (parlar)",                   a: "parleu" },
+    { id: 'w1e5',  q: "Ells ___ fins tard cada dia. (dormir)",             a: "dormen" },
+    { id: 'w1e6',  q: "Jo ___ molt content avui. (ser)",                   a: "sóc" },
+    { id: 'w1e7',  q: "Ella ___ molta feina aquesta setmana. (tenir)",     a: "té" },
+    { id: 'w1e8',  q: "Jo ___ al mercat ara. (anar)",                      a: "vaig" },
+    { id: 'w1e9',  q: "Ell ___ el sopar cada vespre. (fer)",               a: "fa" },
+    { id: 'w1e10', q: "Jo no ___ vindre demà. (poder)",                    a: "puc" }
+  ],
+
+  routine: [
+    {
+      day: 1, title: "Terminacions -AR regulars",
+      tasks: [
+        { t: "0–5'",   d: "Lee la tabla de parlar. Di cada forma en voz alta 2 veces." },
+        { t: "5–12'",  d: "Conjuga de memoria: menjar, treballar, comprar." },
+        { t: "12–15'", d: "Escribe 3 frases propias sobre hoy en -AR. Di las frases en voz alta." }
+      ]
+    },
+    {
+      day: 2, title: "Terminacions -ER/-IR regulars",
+      tasks: [
+        { t: "0–5'",   d: "Repasa parlar de memoria (1 min). Luego lee córrer i dormir." },
+        { t: "5–12'",  d: "Conjuga: beure, eixir, obrir. Observa las diferencias con -AR." },
+        { t: "12–15'", d: "3 frases mezclando los tres grupos. Jo menj, corre i dorm bé." }
+      ]
+    },
+    {
+      day: 3, title: "Ser + estar · primer irregular",
+      tasks: [
+        { t: "0–5'",   d: "Escribe de memoria las formas de parlar. Máx. 1 min." },
+        { t: "5–12'",  d: "ser = identidad permanente · estar = estado temporal. Memoriza las frases modelo." },
+        { t: "12–15'", d: "3 frases: una con sóc, una con estic, una con és / està." }
+      ]
+    },
+    {
+      day: 4, title: "Tenir + poder · irregulars en -c",
+      tasks: [
+        { t: "0–5'",   d: "Di en voz alta sin mirar: sóc, ets, és... / estic, estàs, està..." },
+        { t: "5–12'",  d: "Memoriza tinc / té y puc / pot. Practica: Tinc gana. No puc vindre. Té raó." },
+        { t: "12–15'", d: "Frases libres con tinc y no puc aplicadas a tu día real." }
+      ]
+    },
+    {
+      day: 5, title: "Anar + fer · els més usats",
+      tasks: [
+        { t: "0–5'",   d: "Escribe sin mirar jo, tu, ell de: ser, estar, tenir, poder." },
+        { t: "5–12'",  d: "Aprende vaig / va / van y faig / fa / fan. vaig también construye el pasado perifrástico." },
+        { t: "12–15'", d: "5 preguntas con On vas? Què fas? Qui va? Invéntalas y respóndelas." }
+      ]
+    },
+    {
+      day: 6, title: "Exercicis · autocorrecció",
+      tasks: [
+        { t: "0–3'",   d: "Di las frases modelo en voz alta (pestaña Irregulars)." },
+        { t: "3–12'",  d: "Haz los ejercicios sin mirar las tablas. Luego corrige." },
+        { t: "12–15'", d: "Anota qué formas has fallado. Esas son tu prioridad el día 7." }
+      ]
+    },
+    {
+      day: 7, title: "Producció lliure total",
+      tasks: [
+        { t: "0–3'",   d: "Repasa los errores del día 6." },
+        { t: "3–15'",  d: "Escribe un párrafo de 8-10 frases describiendo tu semana. Usa todos los verbos. Léelo en voz alta al terminar." }
+      ]
+    }
+  ]
+});
