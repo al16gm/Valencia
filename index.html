@@ -718,5 +718,31 @@ loadScripts(SESSION_FILES, () => {
   renderHome();
 });
 </script>
+
+<!-- FOOTER -->
+<footer id="app-footer">
+  <div class="footer-inner">
+    <span class="footer-title">Aprendre Valencià</span>
+    <span class="footer-dot">·</span>
+    <span class="footer-author">Creat per <strong>al16gm</strong></span>
+    <span class="footer-dot">·</span>
+    <span class="footer-year">2025</span>
+    <span class="footer-dot">·</span>
+    <a class="footer-license" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>
+    <span class="footer-dot">·</span>
+    <a class="footer-gh" href="https://github.com/al16gm/Valencia" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</footer>
+<style>
+#app-footer{position:fixed;bottom:0;left:0;right:0;background:rgba(2,6,23,0.96);border-top:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(8px);padding:7px 16px;padding-bottom:calc(7px + env(safe-area-inset-bottom,0px));z-index:50;}
+.footer-inner{max-width:42rem;margin:0 auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:0.6rem;color:#475569;}
+.footer-title{color:#64748b;font-weight:700;letter-spacing:.05em;}
+.footer-dot{color:#2e3a4a;}
+.footer-author strong{color:#60a5fa;}
+.footer-license,.footer-gh{display:inline-flex;align-items:center;gap:3px;color:#475569;text-decoration:none;transition:color .15s;}
+.footer-license:hover{color:#a5b4fc;}
+.footer-gh:hover{color:#94a3b8;}
+main{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))!important;}
+</style>
 </body>
 </html>
