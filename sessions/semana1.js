@@ -6,7 +6,7 @@
 // ─────────────────────────────────────────
 
 SESSIONS.push({
-  id: 'week-1',
+  id: 'week-1', num: 1,
   week: 1,
   title: "Present d'Indicatiu",
   description: "La base gramatical: els tres grups de verbs regulars i els irregulars més comuns.",
