@@ -65,7 +65,28 @@ input,textarea{font-family:inherit;}
 .session-desc{font-size:0.75rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:0.125rem;}
 .session-arrow{width:2rem;height:2rem;border-radius:50%;background:rgba(30,41,59,0.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s;}
 .session-card:hover .session-arrow{background:rgba(37,99,235,0.2);}
-.sessions-list{display:flex;flex-direction:column;gap:1rem;padding-bottom:5rem;}
+.sessions-list{display:flex;flex-direction:column;gap:0;padding-bottom:5rem;}
+/* MCER progress bar */
+.mcer-bar{background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.05);border-radius:1.25rem;padding:1.25rem 1.25rem 1rem;margin-bottom:1.5rem;}
+.mcer-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;}
+.mcer-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#64748b;text-transform:uppercase;letter-spacing:0.1em;}
+.mcer-count{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#60a5fa;font-weight:700;}
+.mcer-track{height:6px;background:rgba(255,255,255,0.05);border-radius:9999px;overflow:hidden;margin-bottom:0.5rem;}
+.mcer-fill{height:100%;background:linear-gradient(90deg,#1d4ed8,#60a5fa);border-radius:9999px;transition:width 0.6s ease;}
+.mcer-levels{position:relative;height:1.25rem;}
+.mcer-lvl{position:absolute;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#475569;text-transform:uppercase;}
+/* Bloc groups */
+.bloc-group{margin-bottom:1.5rem;}
+.bloc-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:#3b82f6;padding:0.5rem 0 0.75rem;border-bottom:1px solid rgba(59,130,246,0.15);margin-bottom:0.75rem;}
+/* Session cards spacing inside blocs */
+.bloc-group .session-card{margin-bottom:0.75rem;}
+.bloc-group .session-card:last-child{margin-bottom:0;}
+/* Soon state */
+.session-soon{opacity:0.5;cursor:default;pointer-events:none;}
+.soon-num{color:#334155;background:rgba(15,23,42,0.3);}
+.soon-lbl{color:#334155;}
+.soon-title{color:#475569;}
+.soon-badge{display:flex;align-items:center;gap:0.375rem;font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;color:#334155;white-space:nowrap;flex-shrink:0;}
 .upcoming{padding:2.5rem;border:2px dashed rgba(255,255,255,0.05);border-radius:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0.4;}
 .upcoming-icon{padding:1rem;background:#020617;border-radius:1rem;margin-bottom:1rem;}
 .upcoming-label{font-size:0.75rem;color:#475569;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.2em;}
@@ -270,85 +291,8 @@ input,textarea{font-family:inherit;}
 /* ── DATA ── */
 const MEANINGS = {"menjar":"comer","treballar":"trabajar","comprar":"comprar","estudiar":"estudiar","caminar":"caminar","mirar":"mirar","esperar":"esperar","beure":"beber","vendre":"vender","perdre":"perder","escriure":"escribir","saber":"saber","obrir":"abrir","eixir":"salir","sentir":"sentir","servir":"servir","llegir":"leer"};
 
-const SESSIONS = [{
-  id:'week-1-2', week:1,
-  title:"Present d'Indicatiu",
-  description:"La base gramatical: els tres grups de verbs regulars i els irregulars més comuns.",
-  topics:["Present d'Indicatiu","Verbs -AR","Verbs -ER/-RE","Verbs -IR","Ser i Estar","Verbs de moviment"],
-  grammar:{
-    notes:[
-      "La 1ª persona (-AR) termina en -e, no en -o. Jo parle, no *parlo.",
-      "Si conoces la raíz en castellano, en valenciano el patrón de terminaciones es el mismo para todos los verbos regulares del mismo grupo."
-    ],
-    verbGroups:[
-      {title:"Verbs en -AR",infinitive:"parlar",meaning:"hablar",
-       conjugations:[{p:"jo",f:"parle",t:"hablo",hl:true},{p:"tu",f:"parles",t:"hablas"},{p:"ell/ella",f:"parla",t:"habla"},{p:"nosaltres",f:"parlem",t:"hablamos"},{p:"vosaltres",f:"parleu",t:"habláis"},{p:"ells/elles",f:"parlen",t:"hablan"}],
-       examples:["menjar","treballar","comprar","estudiar","caminar","mirar","esperar"]},
-      {title:"Verbs en -ER/-RE",infinitive:"córrer",meaning:"correr",
-       conjugations:[{p:"jo",f:"corre",t:"corro",hl:true},{p:"tu",f:"corres",t:"corres"},{p:"ell/ella",f:"corre",t:"corre"},{p:"nosaltres",f:"correm",t:"corremos"},{p:"vosaltres",f:"correu",t:"corréis"},{p:"ells/elles",f:"corren",t:"corren"}],
-       examples:["beure","vendre","perdre","escriure","saber"]},
-      {title:"Verbs en -IR",infinitive:"dormir",meaning:"dormir",
-       conjugations:[{p:"jo",f:"dorm",t:"duermo",hl:true},{p:"tu",f:"dorms",t:"duermes"},{p:"ell/ella",f:"dorm",t:"duerme"},{p:"nosaltres",f:"dormim",t:"dormimos"},{p:"vosaltres",f:"dormiu",t:"dormís"},{p:"ells/elles",f:"dormen",t:"duermen"}],
-       examples:["obrir","eixir","sentir","servir","llegir"]}
-    ]
-  },
-  irregulars:[
-    {infinitive:"ser",meaning:"ser",conjugations:[{p:"jo",f:"sóc"},{p:"tu",f:"ets"},{p:"ell/ella",f:"és"},{p:"nosaltres",f:"som"},{p:"vosaltres",f:"sou"},{p:"ells/elles",f:"són"}]},
-    {infinitive:"estar",meaning:"estar",conjugations:[{p:"jo",f:"estic"},{p:"tu",f:"estàs"},{p:"ell/ella",f:"està"},{p:"nosaltres",f:"estem"},{p:"vosaltres",f:"esteu"},{p:"ells/elles",f:"estan"}]},
-    {infinitive:"tenir",meaning:"tener",conjugations:[{p:"jo",f:"tinc"},{p:"tu",f:"tens"},{p:"ell/ella",f:"té"},{p:"nosaltres",f:"tenim"},{p:"vosaltres",f:"teniu"},{p:"ells/elles",f:"tenen"}]},
-    {infinitive:"anar",meaning:"ir",conjugations:[{p:"jo",f:"vaig"},{p:"tu",f:"vas"},{p:"ell/ella",f:"va"},{p:"nosaltres",f:"anem"},{p:"vosaltres",f:"aneu"},{p:"ells/elles",f:"van"}]},
-    {infinitive:"fer",meaning:"hacer",conjugations:[{p:"jo",f:"faig"},{p:"tu",f:"fas"},{p:"ell/ella",f:"fa"},{p:"nosaltres",f:"fem"},{p:"vosaltres",f:"feu"},{p:"ells/elles",f:"fan"}]},
-    {infinitive:"poder",meaning:"poder",conjugations:[{p:"jo",f:"puc"},{p:"tu",f:"pots"},{p:"ell/ella",f:"pot"},{p:"nosaltres",f:"podem"},{p:"vosaltres",f:"podeu"},{p:"ells/elles",f:"poden"}]}
-  ],
-  exercises:[
-    {id:'e1',q:"Jo ___ molt de temps a casa. (treballar)",a:"treballe"},
-    {id:'e2',q:"Ella ___ cada matí al parc. (córrer)",a:"corre"},
-    {id:'e3',q:"Nosaltres ___ a la universitat. (estudiar)",a:"estudiem"},
-    {id:'e4',q:"Vosaltres ___ molt bé. (parlar)",a:"parleu"},
-    {id:'e5',q:"Ells ___ fins tard cada dia. (dormir)",a:"dormen"},
-    {id:'e6',q:"Jo ___ molt content avui. (ser)",a:"sóc"},
-    {id:'e7',q:"Ella ___ molta feina aquesta setmana. (tenir)",a:"té"},
-    {id:'e8',q:"Jo ___ al mercat ara. (anar)",a:"vaig"},
-    {id:'e9',q:"Ell ___ el sopar cada vespre. (fer)",a:"fa"},
-    {id:'e10',q:"Jo no ___ vindre demà. (poder)",a:"puc"}
-  ],
-  routine:[
-    {day:1,title:"Terminacions -AR regulars",tasks:[
-      {t:"0–5'",d:"Lee la tabla de parlar. Di cada forma en voz alta 2 veces."},
-      {t:"5–12'",d:"Conjuga de memoria: menjar, treballar, comprar."},
-      {t:"12–15'",d:"Escribe 3 frases propias sobre hoy en -AR. Di las frases en voz alta."}
-    ]},
-    {day:2,title:"Terminacions -ER/-IR regulars",tasks:[
-      {t:"0–5'",d:"Repasa parlar de memoria (1 min). Luego lee córrer i dormir."},
-      {t:"5–12'",d:"Conjuga: beure, eixir, obrir. Observa las diferencias con -AR."},
-      {t:"12–15'",d:"3 frases mezclando los tres grupos. Jo menj, corre i dorm bé."}
-    ]},
-    {day:3,title:"Ser + estar · primer irregular",tasks:[
-      {t:"0–5'",d:"Escribe de memoria las formas de parlar. Máx. 1 min."},
-      {t:"5–12'",d:"ser = identidad permanente · estar = estado temporal. Memoriza las frases modelo."},
-      {t:"12–15'",d:"3 frases: una con sóc, una con estic, una con és / està."}
-    ]},
-    {day:4,title:"Tenir + poder · irregulars en -c",tasks:[
-      {t:"0–5'",d:"Di en voz alta sin mirar: sóc, ets, és... / estic, estàs, està..."},
-      {t:"5–12'",d:"Memoriza tinc / té y puc / pot. Practica: Tinc gana. No puc vindre. Té raó."},
-      {t:"12–15'",d:"Frases libres con tinc y no puc aplicadas a tu día real."}
-    ]},
-    {day:5,title:"Anar + fer · els més usats",tasks:[
-      {t:"0–5'",d:"Escribe sin mirar jo, tu, ell de: ser, estar, tenir, poder."},
-      {t:"5–12'",d:"Aprende vaig / va / van y faig / fa / fan. vaig también construye el pasado perifrástico."},
-      {t:"12–15'",d:"5 preguntas con On vas? Què fas? Qui va? Invéntalas y respóndelas."}
-    ]},
-    {day:6,title:"Exercicis · autocorrecció",tasks:[
-      {t:"0–3'",d:"Di las frases modelo en voz alta (pestaña Irregulars)."},
-      {t:"3–12'",d:"Haz los ejercicios sin mirar las tablas. Luego corrige."},
-      {t:"12–15'",d:"Anota qué formas has fallado. Esas son tu prioridad el día 7."}
-    ]},
-    {day:7,title:"Producció lliure total",tasks:[
-      {t:"0–3'",d:"Repasa los errores del día 6."},
-      {t:"3–15'",d:"Escribe un párrafo de 8-10 frases describiendo tu semana. Usa todos los verbos. Léelo en voz alta al terminar."}
-    ]}
-  ]
-}];
+// Array global — cada semanaX.js hace SESSIONS.push({...})
+const SESSIONS = [];
 
 /* ── STATE ── */
 let curSession = null, exAnswers = {}, showResults = false, verbState = {};
@@ -379,26 +323,88 @@ function switchTab(name,btn){
 /* ── NORMALIZE ── */
 function norm(s){return s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ç/g,'c');}
 
+/* ── CURRICULUM INDEX — 20 sessions ── */
+const CURRICULUM = [
+  {id:'week-1', num:1,  bloc:'BLOC 1 · A1 Consolidat',   title:"Present d'Indicatiu",          desc:"Verbs regulars (-AR/-ER/-IR) i irregulars clau: ser, estar, tenir, anar, fer, poder."},
+  {id:'week-2', num:2,  bloc:null,                        title:"Passat Perifràstic",            desc:"Vaig/vas/va + infinitiu. El passat del dia a dia: ahir vaig anar, va dir..."},
+  {id:'week-3', num:3,  bloc:null,                        title:"Futur: immediat i simple",      desc:"Anar a + infinitiu · Futur simple (-é, -às, -à). Planes i prediccions."},
+  {id:'week-4', num:4,  bloc:null,                        title:"Preguntes essencials",          desc:"Què, On, Quan, Com, Per què, Qui, Quant. Estructura de la pregunta en valencià."},
+  {id:'week-5', num:5,  bloc:null,                        title:"Negació i respostes",           desc:"No, tampoc, mai, res, ningú. Com negar i respondre de forma natural."},
+  {id:'week-6', num:6,  bloc:'BLOC 2 · A1→A2 Transició', title:"Articles i gènere",            desc:"El/la/els/les · un/una · contraccions al/del. Gènere i nombre dels noms."},
+  {id:'week-7', num:7,  bloc:null,                        title:"Pronoms personals",             desc:"Jo, tu, ell... · Pronoms febles: el, la, li, ho, en, hi. Posició i ús."},
+  {id:'week-8', num:8,  bloc:null,                        title:"Adjectius",                    desc:"Concordança i posició. Comparatius: més/menys que, tan...com. Superlatius."},
+  {id:'week-9', num:9,  bloc:null,                        title:"Verbs modals",                  desc:"Voler, deure, poder, saber + infinitiu. Obligació, possibilitat i desig."},
+  {id:'week-10',num:10, bloc:null,                        title:"Preposicions essencials",       desc:"A, de, en, amb, per, per a, fins, des de. Errors freqüents i distinció amb el castellà."},
+  {id:'week-11',num:11, bloc:'BLOC 3 · A2 Nucli',         title:"Imperfet d'indicatiu",         desc:"Parlava, tenia, anava... Accions habituals i descripcions en el passat."},
+  {id:'week-12',num:12, bloc:null,                        title:"Condicional",                   desc:"Parlaria, tindria, m'agradaria... Desitjos, hipòtesis i suggeriments."},
+  {id:'week-13',num:13, bloc:null,                        title:"Present de subjuntiu",          desc:"Introducció: vull que vingues, espere que puga... Expressions de desig i dubte."},
+  {id:'week-14',num:14, bloc:null,                        title:"Imperatius",                    desc:"Vine, menja, escolta! Ordres, peticions i instruccions en positiu i negatiu."},
+  {id:'week-15',num:15, bloc:null,                        title:"Perífrasis verbals",            desc:"Estar + gerundi · Acabar de + inf · Tornar a + inf · Deixar de + inf."},
+  {id:'week-16',num:16, bloc:'BLOC 4 · A2 Consolidat',   title:"Rutina diària i temps lliure", desc:"Vocabulari temàtic: hores, dies, activitats quotidianes i d'oci."},
+  {id:'week-17',num:17, bloc:null,                        title:"Menjar, mercat i restaurants",  desc:"Vocabulari gastronòmic. Fer una comanda, demanar el compte, comprar al mercat."},
+  {id:'week-18',num:18, bloc:null,                        title:"Transport, ciutat i indicacions",desc:"Moure's per la ciutat. Demanar i donar indicacions. Mitjans de transport."},
+  {id:'week-19',num:19, bloc:null,                        title:"Expressions col·loquials",      desc:"Frases fetes, expressions valencianistes i registre informal."},
+  {id:'week-20',num:20, bloc:null,                        title:"Repàs general · Nivell A2",     desc:"Repàs de tots els blocs. Producció lliure avançada. Certificació de nivell A2 MCER."},
+];
+
 /* ── HOME ── */
 function renderHome(){
-  document.getElementById('sessions-list').innerHTML=
-    SESSIONS.map(s=>`
-      <button class="session-card" onclick='showSession(SESSIONS[${SESSIONS.indexOf(s)}])'>
-        <div class="session-num">${s.week}</div>
+  const loadedIds = new Set(SESSIONS.map(s=>s.id));
+  const done = CURRICULUM.filter(c=>loadedIds.has(c.id)).length;
+  const total = CURRICULUM.length;
+  const pct = Math.round(done/total*100);
+
+  const progressHtml = `
+    <div class="mcer-bar">
+      <div class="mcer-bar-top">
+        <span class="mcer-label">Progrés cap al Nivell A2 · MCER</span>
+        <span class="mcer-count">${done}/${total} sessions</span>
+      </div>
+      <div class="mcer-track"><div class="mcer-fill" style="width:${pct}%"></div></div>
+      <div class="mcer-levels">
+        <span class="mcer-lvl" style="left:0%">A1</span>
+        <span class="mcer-lvl" style="left:25%">A1+</span>
+        <span class="mcer-lvl" style="left:50%">A2</span>
+        <span class="mcer-lvl" style="left:75%">A2+</span>
+        <span class="mcer-lvl" style="left:100%">A2✓</span>
+      </div>
+    </div>`;
+
+  let html = '';
+  let curBloc = null;
+  CURRICULUM.forEach(c=>{
+    if(c.bloc){
+      if(curBloc!==null) html+='</div>';
+      html+=`<div class="bloc-group"><div class="bloc-label">${c.bloc}</div>`;
+      curBloc=c.bloc;
+    }
+    const loaded=loadedIds.has(c.id);
+    const idx=SESSIONS.findIndex(s=>s.id===c.id);
+    if(loaded){
+      html+=`<button class="session-card" onclick="showSession(SESSIONS[${idx}])">
+        <div class="session-num">${c.num}</div>
         <div class="session-info">
-          <div class="session-week-row">
-            <span class="session-week-label">Setmana ${s.week}</span>
-            <div class="session-week-line"></div>
-          </div>
-          <div class="session-title">${s.title}</div>
-          <div class="session-desc">${s.description}</div>
+          <div class="session-week-row"><span class="session-week-label">Sessió ${c.num}</span><div class="session-week-line"></div></div>
+          <div class="session-title">${c.title}</div>
+          <div class="session-desc">${c.desc}</div>
         </div>
         <div class="session-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </button>`).join('')+`
-    <div class="upcoming">
-      <div class="upcoming-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-      <p class="upcoming-label">Pròximes Sessions</p>
-    </div>`;
+      </button>`;
+    } else {
+      html+=`<div class="session-card session-soon">
+        <div class="session-num soon-num">${c.num}</div>
+        <div class="session-info">
+          <div class="session-week-row"><span class="session-week-label soon-lbl">Sessió ${c.num}</span><div class="session-week-line"></div></div>
+          <div class="session-title soon-title">${c.title}</div>
+          <div class="session-desc">${c.desc}</div>
+        </div>
+        <div class="soon-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Preparant</div>
+      </div>`;
+    }
+  });
+  if(curBloc!==null) html+='</div>';
+
+  document.getElementById('sessions-list').innerHTML=progressHtml+html;
 }
 
 /* ── GLOSSARY ── */
@@ -550,8 +556,33 @@ function renderRoutine(){
       </div>`).join('')+`</div>`;
 }
 
-/* ── INIT ── */
-renderHome();
+/* ── INIT: carga dinámica de archivos sessions/semanaX.js ── */
+const SESSION_FILES = [
+  'sessions/semana1.js',
+  'sessions/semana2.js',
+  'sessions/semana3.js',
+  'sessions/semana4.js',
+  'sessions/semana5.js',
+  'sessions/semana6.js',
+  // sessions 7-20 s'afegiran progressivament
+];
+
+function loadScripts(files, done) {
+  let loaded = 0;
+  if (files.length === 0) { done(); return; }
+  files.forEach(src => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => { loaded++; if (loaded === files.length) done(); };
+    s.onerror = () => { loaded++; if (loaded === files.length) done(); };
+    document.head.appendChild(s);
+  });
+}
+
+loadScripts(SESSION_FILES, () => {
+  SESSIONS.sort((a, b) => a.num - b.num);
+  renderHome();
+});
 </script>
 </body>
 </html>
