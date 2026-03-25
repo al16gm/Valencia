@@ -233,6 +233,9 @@ input,textarea{font-family:inherit;}
 .vp-cast{font-size:0.75rem;color:#64748b;margin-top:0.25rem;line-height:1.3;transition:color 0.15s;}
 .vocab-pill.flipped .vp-cast{color:#a5b4fc;}
 .vocab-count{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:#64748b;margin-bottom:1rem;}
+.session-type-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:.75rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.25rem;}
+.vocab-type-badge{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);color:#6ee7b7;}
+.resum-type-badge{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2);color:#fde68a;}
   .home-h1{font-size:2.5rem;}
   .irreg-grid{grid-template-columns:1fr;}
   .verb-table th,.verb-table td{padding:0.75rem 0.625rem;}
@@ -286,11 +289,8 @@ input,textarea{font-family:inherit;}
         <h1 class="sv-title" id="sv-title"></h1>
       </div>
     </div>
-    <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('grammar',this)">Gramàtica</button>
-      <button class="tab-btn" onclick="switchTab('irregulars',this)">Irregulars</button>
-      <button class="tab-btn" onclick="switchTab('exercises',this)">Exercicis</button>
-      <button class="tab-btn" onclick="switchTab('routine',this)">Rutina</button>
+    <nav class="tab-nav" id="sv-tab-nav">
+      <!-- filled dynamically by showSession() -->
     </nav>
   </div>
   <div id="tab-grammar" class="tab-content active"></div>
@@ -327,16 +327,47 @@ let curSession = null, exAnswers = {}, showResults = false, verbState = {};
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
 function showHome(){showView('home-view');}
 function showGlossary(){renderGlossary();showView('glossary-view');}
+/* ── TAB DEFINITIONS PER SESSION TYPE ── */
+// Each entry: { key, label }
+const TABS_GRAMMAR  = [{k:'grammar',l:'Gramàtica'}, {k:'irregulars',l:'Taules'},     {k:'exercises',l:'Exercicis'}, {k:'routine',l:'Rutina'}];
+const TABS_VOCAB    = [{k:'grammar',l:'Vocabulari'}, {k:'irregulars',l:'Taules'},     {k:'exercises',l:'Exercicis'}, {k:'routine',l:'Rutina'}];
+const TABS_RESUM    = [{k:'grammar',l:'Repàs'},      {k:'irregulars',l:'Resum'},      {k:'exercises',l:'Prova A2'}, {k:'routine',l:'Rutina'}];
+
+function getSessionTabs(s){
+  if(s._isVocab) return null;           // vocab session has its own layout
+  if(s.num >= 16 && s.num <= 19) return TABS_VOCAB;
+  if(s.num === 20)                return TABS_RESUM;
+  return TABS_GRAMMAR;                  // S1–S15
+}
+
+function buildTabNav(tabs){
+  const nav = document.getElementById('sv-tab-nav');
+  nav.innerHTML = tabs.map((t,i)=>
+    `<button class="tab-btn${i===0?' active':''}" onclick="switchTab('${t.k}',this)">${t.l}</button>`
+  ).join('');
+}
+
 function showSession(s){
   curSession=s; exAnswers={}; showResults=false; verbState={};
   document.getElementById('sv-week-label').textContent = s._isVocab ? '📚 Diccionari de Butxaca' : 'Sessió '+s.num;
-  document.getElementById('sv-title').textContent=s.title;
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  document.getElementById('sv-title').textContent = s.title;
+
+  // Reset tab content visibility
   document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===0));
+
   if(s._isVocab){
+    // Special vocab session — its own nav
+    document.getElementById('sv-tab-nav').innerHTML=`
+      <button class="tab-btn active" onclick="switchTab('grammar',this)">Vocabulari</button>
+      <button class="tab-btn" onclick="switchTab('irregulars',this)">Com usar-lo</button>`;
     renderVocabSession(s);
   } else {
-    renderGrammar(); renderIrregulars(); renderExercises(); renderRoutine();
+    const tabs = getSessionTabs(s);
+    buildTabNav(tabs);
+    renderGrammar();
+    renderIrregulars();
+    renderExercises();
+    renderRoutine();
   }
   showView('session-view');
 }
@@ -502,12 +533,24 @@ function renderVerbTable(g){
 
 function renderGrammar(){
   const s=curSession;
+  // S16-S19: "Vocabulari" tab — add a vocab intro note
+  const isVocabSession = s.num >= 16 && s.num <= 19;
+  const isResum = s.num === 20;
+
   const notes=s.grammar.notes.map(n=>`
     <div class="note-card">
       <div class="note-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
       <p class="note-text">${n}</p>
     </div>`).join('');
-  document.getElementById('tab-grammar').innerHTML=notes+s.grammar.verbGroups.map(g=>renderVerbTable(g)).join('');
+
+  let prefix = '';
+  if(isVocabSession){
+    prefix = `<div class="session-type-badge vocab-type-badge">📖 Sessió de vocabulari temàtic</div>`;
+  } else if(isResum){
+    prefix = `<div class="session-type-badge resum-type-badge">🏆 Repàs final · Nivell A2 MCER</div>`;
+  }
+
+  document.getElementById('tab-grammar').innerHTML = prefix + notes + s.grammar.verbGroups.map(g=>renderVerbTable(g)).join('');
 }
 
 function selectPill(gt,ex){
@@ -521,9 +564,39 @@ function resetPill(gt){
   renderGrammar();
 }
 
-/* ── IRREGULARS ── */
+/* ── TAULES / IRREGULARS / RESUM ── */
 function renderIrregulars(){
-  const cards=(curSession.irregulars||[]).map(g=>`
+  const s = curSession;
+  const isVocabSession = s.num >= 16 && s.num <= 19;
+  const isResum = s.num === 20;
+
+  // S20: Resum tab — show a compact summary of all blocs
+  if(isResum){
+    const cards=(s.irregulars||[]).map(g=>`
+      <div class="irreg-card">
+        <div class="irreg-header">
+          <span class="irreg-inf" style="font-size:.95rem;">${g.infinitive}</span>
+          <span class="irreg-meaning">${g.meaning}</span>
+        </div>
+        <div class="irreg-body">
+          ${g.conjugations.map(c=>`
+            <div class="irreg-row">
+              <span class="irreg-pro">${c.p}</span>
+              <span class="irreg-form" style="font-size:.8rem;color:#94a3b8;">${c.f}</span>
+            </div>`).join('')}
+        </div>
+      </div>`).join('');
+    document.getElementById('tab-irregulars').innerHTML=`
+      <div class="note-card" style="margin-bottom:1.5rem;">
+        <div class="note-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <p class="note-text">Resum complet de tots els blocs del curs. Usa-ho com a full de referència ràpida.</p>
+      </div>
+      <div class="irreg-grid">${cards}</div>`;
+    return;
+  }
+
+  // All other sessions: standard irreg/taules cards
+  const cards=(s.irregulars||[]).map(g=>`
     <div class="irreg-card">
       <div class="irreg-header">
         <span class="irreg-inf">${g.infinitive}</span>
@@ -537,7 +610,12 @@ function renderIrregulars(){
           </div>`).join('')}
       </div>
     </div>`).join('');
-  document.getElementById('tab-irregulars').innerHTML=`<div class="irreg-grid">${cards}</div>`;
+
+  const intro = isVocabSession
+    ? `<div class="note-card" style="margin-bottom:1.5rem;"><div class="note-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><p class="note-text">Taules de referència, frases model i vocabulari ampliat per a aquesta sessió.</p></div>`
+    : '';
+
+  document.getElementById('tab-irregulars').innerHTML=intro+`<div class="irreg-grid">${cards}</div>`;
 }
 
 /* ── EXERCISES ── */
@@ -636,7 +714,23 @@ function renderVocabSession(s){
     <div id="vocab-blocs">${blocs}</div>`;
 
   // Hide other tabs for vocab session
-  document.getElementById('tab-irregulars').innerHTML='<p style="color:#64748b;padding:1rem;font-size:.85rem;">Usa la pestanya Gramàtica per explorar el vocabulari.</p>';
+  document.getElementById('tab-irregulars').innerHTML=`
+    <div class="note-card"><div class="note-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    <p class="note-text"><strong>Com usar este diccionari de forma eficaç:</strong></p></div>
+    <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:1rem;">
+      ${[
+        ['👆 Toca per revelar','Cada targeta mostra el valencià. Toca-la per veure la traducció al castellà. Torna a tocar per amagar-la.'],
+        ['🔍 Buscador','Escriu qualsevol paraula en valencià o castellà per trobar-la al moment. Útil quan llegeixes o sents alguna cosa nova.'],
+        ['🎯 Filtra per tema','Usa els botons de dalt per centrar-te en un sol bloc temàtic: menjar, família, transport...'],
+        ['📅 Estudi per blocs','No intentes aprendre les 300 paraules d\'un cop. Dedica un dia a cada tema. 15-20 paraules per sessió és suficient.'],
+        ['🔄 Repàs actiu','Tapa la traducció i intenta recordar-la. Si no la recordes, és la paraula que has de practicar. La repetició espaiada (Anki) és ideal per a esto.'],
+        ['💬 Usa-les en context','Per cada paraula nova, inventa una frase senzilla amb ella. Escriu-la. Això la fixa molt millor que memoritzar-la sola.']
+      ].map(([t,d])=>`
+        <div style="background:rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.05);border-radius:1rem;padding:1rem 1.25rem;">
+          <div style="font-weight:600;color:#e2e8f0;font-size:.88rem;margin-bottom:.375rem;">${t}</div>
+          <div style="font-size:.82rem;color:#94a3b8;line-height:1.6;">${d}</div>
+        </div>`).join('')}
+    </div>`;
   document.getElementById('tab-exercises').innerHTML='<p style="color:#64748b;padding:1rem;font-size:.85rem;">Fes clic sobre cada paraula per veure la traducció i amagar-la.</p>';
   document.getElementById('tab-routine').innerHTML=`
     <div class="note-card"><div class="note-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
